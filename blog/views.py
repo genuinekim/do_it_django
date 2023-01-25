@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.views.generic import ListView
+# from django.shortcuts import render
+from django.views.generic import ListView, DetailView
 from .models import Post
 
 class PostList(ListView): #CBV
@@ -20,8 +20,12 @@ def index(request):  #FBV
     )
 """
 
+class PostDetail(DetailView): #CBV
+    model = Post
+    template_name = 'blog/single_post_page.html'
 
-def single_post_page(request, pk):
+"""
+def single_post_page(request, pk): # FBV
     post = Post.objects.get(pk=pk)
 
     return render(
@@ -31,3 +35,4 @@ def single_post_page(request, pk):
             'post': post,
         }
     )
+"""
