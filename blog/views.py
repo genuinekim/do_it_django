@@ -4,7 +4,7 @@ from .models import Post
 
 class PostList(ListView): #CBV
     model = Post
-    template_name = 'blog/index.html'
+    # template_name = 'blog/index.html'
     ordering = '-pk'
 
 """
@@ -22,7 +22,7 @@ def index(request):  #FBV
 
 class PostDetail(DetailView): #CBV
     model = Post
-    template_name = 'blog/single_post_page.html'
+    # template_name = 'blog/single_post_page.html'
 
 """
 def single_post_page(request, pk): # FBV
