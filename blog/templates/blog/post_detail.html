@@ -51,7 +51,11 @@
                         <hr>
 
                         <!-- Preview image figure-->
-                        <figure class="mb-4"><img class="img-fluid rounded" src="{{ post.head_image.url }}" alt="..." /></figure>
+                       {% if post.head_image %}
+                        <figure class="mb-4"><img class="img-fluid rounded" src="{{ post.head_image.url }}" alt="{{ post.title }} head_image"></figure>
+                       {% else %}
+                           <img class = "img-fluid rounded" src = "http://picsum.photos/seed/{{ post.pk }}/800/200" alt="random_image">
+                       {% endif %}
 
                         <!-- Post content-->
                         <p>{{ post.content }}</p>
@@ -74,7 +78,7 @@
                                         <div class="d-flex mt-4">
                                             <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
                                             <div class="ms-3">
-                                                <div class="fw-bold">Commenter Name</div>
+                                            <div class="fw-bold">Commenter Name</div>
                                                 And under those conditions, you cannot establish a capital-market evaluation of that enterprise. You can't get investors.
                                             </div>
                                         </div>
