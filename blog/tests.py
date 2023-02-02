@@ -10,7 +10,7 @@ class TestView(TestCase):
         self.user_obama = User.objects.create_user(username='obama', password='somepassword')
         self.category_programming = Category.objects.create(name='programming', slug='programming')
         self.category_music = Category.objects.create(name='music', slug='music')
-        self.tag_python_kor = Tag.objects.create(name='파이썬 공부', slug='파이썬-공부')
+        self.tag_artist = Tag.objects.create(name='artist', slug='artist')
         self.tag_python = Tag.objects.create(name='python', slug='python')
         self.tag_hello = Tag.objects.create(name='hello', slug='hello')
 
@@ -34,9 +34,25 @@ class TestView(TestCase):
             content='카테고리 없음',
             author=self.user_obama
         )
-        self.post_003.tags.add(self.tag_python_kor)
+        self.post_003.tags.add(self.tag_artist)
         self.post_003.tags.add(self.tag_python)
 
+    def test_tag_page(self):
+        response = self.client.get(self.tag_hello.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        self.navbar_test(soup)
+        self.category_card_test(soup)
+
+        self.assertIn(self.tag_hello.name, soup.h1.text)
+
+        main_area = soup.find('div', id='main-area')
+        self.assertIn(self.tag_hello.name, main_area.text)
+
+        self.assertIn(self.post_001.title, main_area.text)
+        self.assertNotIn(self.post_002.title, main_area.text)
+        self.assertNotIn(self.post_003.title, main_area.text)
 
     def category_card_test(self, soup):
         categories_card = soup.find('div', id='categories-card')
@@ -101,7 +117,7 @@ class TestView(TestCase):
         self.assertIn(self.post_001.author.username.upper(), post_001_card.text)
         self.assertNotIn(self.tag_hello.name, post_001_card.text)
         self.assertNotIn(self.tag_python.name, post_001_card.text)
-        self.asserNotIn(self.tag_python_kor.name, post_001_card.text)
+        self.asserNotIn(self.tag_artist.name, post_001_card.text)
 
         post_002_card = main_area.find('div', id='post-2')
         self.assertIn(self.post_002.title, post_002_card.text)
@@ -109,7 +125,7 @@ class TestView(TestCase):
         self.assertIn(self.post_002.author.username.upper(), post_002_card.text)
         self.assertNotIn(self.tag_hello.name, post_002_card.text)
         self.assertNotIn(self.tag_python.name, post_002_card.text)
-        self.asserNotIn(self.tag_python_kor.name, post_002_card.text)
+        self.asserNotIn(self.tag_artist.name, post_002_card.text)
 
         post_003_card = main_area.find('div', id='post-3')
         self.assertIn('미분류', post_003_card.text)
@@ -117,7 +133,7 @@ class TestView(TestCase):
         self.assertIn(self.post_003.author.username.upper(), post_003_card.text)
         self.assertNotIn(self.tag_hello.name, post_003_card.text)
         self.assertIn(self.tag_python.name, post_003_card.text)
-        self.asserIn(self.tag_python_kor.name, post_003_card.text)
+        self.asserIn(self.tag_artist.name, post_003_card.text)
 
 
 
