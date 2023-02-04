@@ -52,7 +52,7 @@ class TestView(TestCase):
         self.assertNotEqual(self.post_003.author, self.user_trump)
         self.client.login(
             username = self.user_trump.username,
-            password = 'sompassword'
+            password = 'somepassword'
         )
         response = self.client.get(update_post_url)
         self.assertEqual(response.status_code, 403)
@@ -70,12 +70,17 @@ class TestView(TestCase):
         main_area = soup.find('div', id='main-area')
         self.assertIn('Edit Post', main_area.text)
 
+        tag_str_input = main_area.find('input', id='id_tags_str')
+        self.assertTrue(tag_str_input)
+        self.assertIn('hello; python', tag_str_input.attrs['value'])
+
         response = self.client.post(
             update_post_url,
             {
                 'title': 'update post3',
                 'content': 'hello world',
-                'cateogry': self.category_music.pk
+                'cateogry': self.category_music.pk,
+                'tags_str': 'hello; good tag, new tag'
             },
             follow=True
         )
@@ -84,6 +89,10 @@ class TestView(TestCase):
         self.assertIn('update post3', main_area.text)
         self.assertIn('hello world', main_area.text)
         self.assertIn(self.category_music.name, main_area.text)
+        self.assertIn('hello', main_area.text)
+        self.assertIn('good tag', main_area.text)
+        self.assertIn('new tag', main_area.text)
+        self.assertNotIn('python', main_area.text)
 
 
     def test_create_post(self):
