@@ -103,11 +103,15 @@ class TestView(TestCase):
         main_area = soup.find('div', id='main-area')
         self.assertIn('Create New Post', main_area.text)
 
+        tag_str_input = main_area.find('input', id='id_tags_str')
+        self.assertTrue(tag_str_input)
+
         self.client.post(
             '/blog/create_post/',
             {
                 'title': 'Create Post Form',
                 'content': "Let`s Create Post Form Page",
+                'tags_str': 'new tag; good tag', 'python'
             }
         )
         self.assertEqaul(Post.objects.count(), 4)
@@ -115,6 +119,10 @@ class TestView(TestCase):
         self.assertEqual(last_post.title, "Create Post Form")
         self.assertEqual(last_post.author.username, 'obama')
 
+        self.assertEqual(last_post.tags.count(), 3)
+        self.assertTrue(Tag.objects.get(name='new tag'))
+        self.assertTrue(Tag.objects.get(name='good tag'))
+        self.assertEqual(Tag.objects.count(), 5)
 
     def test_tag_page(self):
         response = self.client.get(self.tag_hello.get_absolute_url())
