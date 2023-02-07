@@ -17,4 +17,6 @@ urlpatterns = [
     # path('<int:pk>/', views.single_post_page), #FBV
 
     path('<int:pk>/new_comment/', views.new_comment),
+
+    path('update_comment/<int:pk>/', views.CommentUpdate.as_view()),
 ]
