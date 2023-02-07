@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from bs4 import BeautifulSoup
 from django.contrib.auth.models import User
-from .models import Post, Category, Tag
+from .models import Post, Category, Tag, Comment
 
 class TestView(TestCase):
     def setUp(self):
@@ -40,6 +40,11 @@ class TestView(TestCase):
         self.post_003.tags.add(self.tag_artist)
         self.post_003.tags.add(self.tag_python)
 
+        self.comment_001 = Comment.objects.create(
+            post=self.post_001,
+            author=self.user_obama,
+            content='This is First Comment.'
+        )
 
     def test_update_post(self):
         update_post_url = f'/blog/update_post/{self.post_003.pk}/'
@@ -247,7 +252,6 @@ class TestView(TestCase):
 
 
     def test_post_detail(self):
-
         # 1.2 그 포스트의 url은 '/blog/1/' 이다.
         self.assertEqual(self.post_001.get_absolute_url(), '/blog/1/')
 
@@ -281,3 +285,8 @@ class TestView(TestCase):
         self.assertIn(self.tag_hello.name, post_area.text)
         self.assertNotIn(self.tag_python.name, post_area.text)
         self.asserNotIn(self.tag_python_kor.name, post_area.text)
+
+        comments_area = soup.find('div', id='comment-area')
+        comment_001_area = comments_area.find('div', id='comment-1')
+        self.assertIn(self.comment_001.author.username, comment_001_area.text)
+        self.assertIn(self.comment_001.content, comment_001_area.text)
